@@ -16,6 +16,12 @@ import { Country } from '../../schemas/country.schema';
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
 
+  @Get("/getCitiesByCountry/:country")
+  async getCitiesByCountry(@Res() response,@Param('country') country) {
+    const cities = await this.countryService.getCitiesByCountry(country);
+    return response.status(HttpStatus.OK).json({ cities });
+  }
+
   @Get()
   async getAllCountry(@Res() response) {
     const countries = await this.countryService.getAll();

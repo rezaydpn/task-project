@@ -6,8 +6,21 @@ import { Country, CountryDocument } from '../../schemas/country.schema';
 @Injectable()
 export class CountryService {
   constructor(
-    @InjectModel(Country.name) private readonly CountryModel: Model<CountryDocument>,
+    @InjectModel(Country.name)
+    private readonly CountryModel: Model<CountryDocument>,
   ) {}
+
+  async getCitiesByCountry(country): Promise<any[]> {
+    return await this.CountryModel.aggregate()
+      .match({ title: country })
+      .lookup({
+        from: 'city',
+        localField: '_id',
+        foreignField: 'country',
+        as: 'cities',
+      })
+      .exec();
+  }
 
   async getAll(): Promise<Country[]> {
     return await this.CountryModel.find().populate('region').exec();
@@ -23,7 +36,9 @@ export class CountryService {
   }
 
   async update(id, Country: Country): Promise<Country> {
-    return await this.CountryModel.findByIdAndUpdate(id, Country, { new: true });
+    return await this.CountryModel.findByIdAndUpdate(id, Country, {
+      new: true,
+    });
   }
 
   async delete(id): Promise<any> {

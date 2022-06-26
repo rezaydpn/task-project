@@ -22,6 +22,12 @@ export class CityController {
     return response.status(HttpStatus.OK).json({ cities });
   }
 
+  @Get('/cityByRegion/:region')
+  async getRegionCities(@Res() response, @Param('region') region) {
+    const cities = await this.cityService.getCityByRegion(region);
+    return response.status(HttpStatus.OK).json({ cities: cities });
+  }
+
   @Post()
   async createCity(@Res() response, @Body() city: City) {
     const newCity = await this.cityService.create(city);

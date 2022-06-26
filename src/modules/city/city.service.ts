@@ -13,6 +13,31 @@ export class CityService {
     return await this.cityModel.find().populate('country').exec();
   }
 
+  async getCityByRegion(region): Promise<any> {
+    console.log(region);
+    const cities = await this.cityModel
+      .aggregate()
+      .lookup({
+        from: 'country',
+        localField: 'country',
+        foreignField: '_id',
+        as: 'country',
+        pipeline: [
+          {
+            $lookup: {
+              from: 'region',
+              localField: 'region',
+              foreignField: '_id',
+              as: 'region',
+            },
+          },
+        ],
+      })
+      .match({ 'country.region.title': region })
+      .project({ _id: 1, title: 1, 'country.title': 1 })
+      .exec();
+    return cities;
+  }
   async create(City: City): Promise<City> {
     const newCity = new this.cityModel(City);
     return await newCity.save();
