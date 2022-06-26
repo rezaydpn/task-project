@@ -10,11 +10,14 @@ export class CityService {
   ) {}
 
   async getAll(): Promise<City[]> {
-    return await this.cityModel.find().populate('country').exec();
+    return await this.cityModel
+      .aggregate()
+      .sort({ order: 1, title: 1 })
+      .project({ _id: 0, title: 1, order: 1 })
+      .exec();
   }
 
   async getCityByRegion(region): Promise<any> {
-    console.log(region);
     const cities = await this.cityModel
       .aggregate()
       .lookup({
@@ -38,6 +41,7 @@ export class CityService {
       .exec();
     return cities;
   }
+
   async create(City: City): Promise<City> {
     const newCity = new this.cityModel(City);
     return await newCity.save();

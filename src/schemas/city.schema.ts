@@ -1,3 +1,4 @@
+import { DefaultValuePipe } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Country } from './country.schema';
@@ -9,7 +10,14 @@ export class City {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Country' })
+  @Prop({ default: 0, required: true })
+  order: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Country',
+    required: true,
+  })
   country: Country;
 }
 
