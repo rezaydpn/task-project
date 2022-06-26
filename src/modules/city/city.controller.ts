@@ -28,6 +28,7 @@ export class CityController {
     return response.status(HttpStatus.OK).json({ cities: cities });
   }
 
+  
   @Post()
   async createCity(@Res() response, @Body() city: City) {
     const newCity = await this.cityService.create(city);
