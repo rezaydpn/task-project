@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { City, CityDocument } from '../../schemas/city.schema';
+import mongoose, { Model } from 'mongoose';
+import { City, CityDocument } from '../../database/schemas/city.schema';
+import { CityModule } from './city.module';
 
 @Injectable()
 export class CityService {
@@ -13,7 +14,7 @@ export class CityService {
     return await this.cityModel
       .aggregate()
       .sort({ order: 1, title: 1 })
-      .project({ _id: 0, title: 1, order: 1 })
+      .project({ _id: 1, title: 1, order: 1 })
       .exec();
   }
 
@@ -52,7 +53,19 @@ export class CityService {
   }
 
   async update(id, City: City): Promise<City> {
+    console.log(id, City);
     return await this.cityModel.findByIdAndUpdate(id, City, { new: true });
+  }
+
+  async updateMany(city: City[]): Promise<any> {
+    return await this.cityModel.bulkWrite(
+      city.map((item) => ({
+        updateOne: {
+          filter: { _id: new mongoose.Types.ObjectId(item._id) },
+          update: { $set: { order: item.order } },
+        },
+      })),
+    );
   }
 
   async delete(id): Promise<any> {

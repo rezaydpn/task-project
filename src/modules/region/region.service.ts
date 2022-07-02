@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Region, RegionDocument } from '../../schemas/region.schema';
+import { Region, RegionDocument } from '../../database/schemas/region.schema';
 
 @Injectable()
 export class RegionService {

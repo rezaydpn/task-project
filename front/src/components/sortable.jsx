@@ -1,18 +1,13 @@
-import { set } from 'mongoose';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+import axios from 'axios';
+const API_URL = 'http://localhost:3000/';
 
 export default function Sortable() {
-  const [state, setState] = useState([
-    { id: 1, name: 'shrek' },
-    { id: 2, name: 'fiona' },
-    { id: 3, name: 'dad' },
-    { id: 4, name: 'fiadadona' },
-    { id: 5, name: 'dada' },
-  ]);
+  const [state, setState] = useState([]);
 
   const tableData = (row, index) => (
-    <tr style={{ cursor: 'move' }} key={row.id}>
+    <tr style={{ cursor: 'move' }} key={row._id}>
       <td
         style={{
           padding: '5px',
@@ -21,13 +16,40 @@ export default function Sortable() {
           display: 'block',
         }}
       >
-        {row.name} id: {row.id}
+        {row.title}
       </td>
     </tr>
   );
-  const handleClick = () => {
-    console.log(state)
+
+  const handleClick = async () => {
+    let newData = [];
+    state.map((item, index) => {
+      newData.push({
+        _id: item._id,
+        title: item.title,
+        order: index,
+      });
+    });
+    await updateOrderCity(newData);
   };
+
+  const updateOrderCity = async (data) => {
+    try {
+      let _res = await axios.post(API_URL + 'city/update', data);
+      console.log(_res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await axios.get(API_URL + 'city');
+      setState(data.data.cities);
+    };
+    fetchData().catch((err) => console.log('error', err));
+  }, []);
+
   return (
     <>
       <table>
@@ -36,30 +58,12 @@ export default function Sortable() {
           tag="tbody"
           list={state}
           setList={setState}
-          animation={400}
-          group="example"
-          onSort={(item) => {
-            console.log(item.newIndex);
-          }}
-          // onEnd={(evt) => {
-          //   console.log(evt);
-          // }}
-          store={{
-            // get: function (sortable) {
-            //   // var order = localStorage.getItem(sortable.options.group.name);
-            //   // return order ? order.split("|") : [];
-            // },
-            set: function (sortable) {
-              var order = sortable.toArray();
-              console.log(order);
-              // localStorage.setItem(sortable.options.group.name, order.join("|"));
-            },
-          }}
+          animation={300}
         >
           {state.map(tableData)}
         </ReactSortable>
       </table>
-      <button onClick={handleClick}>click</button>
+      <button onClick={handleClick}>Save Order</button>
     </>
   );
 }

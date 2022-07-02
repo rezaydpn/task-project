@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { RegionController } from './region.controller';
 import { RegionService } from './region.service';
-import { Region, RegionSchema } from '../../schemas/region.schema';
+import { Region, RegionSchema } from '../../database/schemas/region.schema';
 
 @Module({
   imports: [

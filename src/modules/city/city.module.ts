@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { CityController } from './city.controller';
 import { CityService } from './city.service';
-import { City, CitySchema } from '../../schemas/city.schema';
+import { City, CitySchema } from '../../database/schemas/city.schema';
 
 @Module({
   imports: [

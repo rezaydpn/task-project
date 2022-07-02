@@ -10,7 +10,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { CityService } from './city.service';
-import { City } from '../../schemas/city.schema';
+import { City } from '../../database/schemas/city.schema';
 
 @Controller('city')
 export class CityController {
@@ -43,6 +43,12 @@ export class CityController {
   @Put('/:id')
   async updateCity(@Res() response, @Param('id') id, @Body() city: City) {
     const updatedCity = await this.cityService.update(id, city);
+    return response.status(HttpStatus.OK).json({ updatedCity });
+  }
+
+  @Post('update')
+  async updateManyCity(@Res() response, @Body() city: City[]) {
+    const updatedCity = await this.cityService.updateMany(city);
     return response.status(HttpStatus.OK).json({ updatedCity });
   }
 

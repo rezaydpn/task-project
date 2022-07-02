@@ -10,7 +10,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { CountryService } from './country.service';
-import { Country } from '../../schemas/country.schema';
+import { Country } from '../../database/schemas/country.schema';
 
 @Controller('Country')
 export class CountryController {
